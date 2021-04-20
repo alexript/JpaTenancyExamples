@@ -4,7 +4,6 @@
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>com.argos.dfe.documents.DateTimeConverter</class>
     <class>com.argos.dfe.documents.model.Document</class>
-    <class>com.argos.dfe.documents.model.DocumentProps</class>
     <class>com.argos.dfe.documents.model.DocumentRequisite</class>
     <class>com.argos.dfe.documents.model.DocumentRequisiteProp</class>
     <properties>

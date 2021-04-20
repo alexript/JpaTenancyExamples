@@ -15,11 +15,12 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
+import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 import org.eclipse.persistence.annotations.Multitenant;
 import org.eclipse.persistence.annotations.MultitenantType;
@@ -33,50 +34,37 @@ import org.eclipse.persistence.config.EntityManagerProperties;
  */
 @Entity
 @UuidGenerator(name = "ID_GEN")
-@Table(name = "doc_head_req_prop",
-        indexes = {
-            @Index(name = "IDX_DOCHEADPROP_name", columnList = "TENANT,reqprop_name", unique = false)
-        })
+@Table(name = "doc_head_req_prop")
 @Multitenant(MultitenantType.SINGLE_TABLE)
 @TenantDiscriminatorColumn(
         name = DISCRIMINATOR_COLUMN_NAME,
         contextProperty = EntityManagerProperties.MULTITENANT_PROPERTY_DEFAULT,
         primaryKey = true)
-public class DocumentRequisiteProp implements PersistedEntity<String>, Serializable {
+@IdClass(DocReqPropPK.class)
+public class DocumentRequisiteProp implements PersistedEntity<DocumentRequisite>, Serializable {
 
     public DocumentRequisiteProp() {
 
     }
 
     private static final long serialVersionUID = 1L;
+
     @Id
-    @Column(name = "id", length = 36, nullable = false, unique = true)
-    @GeneratedValue(generator = "ID_GEN")
-    private String id;
-
-    @JoinColumns(value = {
-        @JoinColumn(name = "requisite_id", referencedColumnName = "id", nullable = true)
-    }, foreignKey = @ForeignKey(
-            name = "FK_Document_head_req_prop",
-            foreignKeyDefinition = "FOREIGN KEY (requisite_id) REFERENCES doc_head_req (id) ON UPDATE CASCADE ON DELETE CASCADE"))
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
-    private DocumentRequisite requisite;
-
-    @Basic(optional = false)
-    @Column(name = "reqprop_name", length = 256, nullable = false)
+    @Column(name = "reqprop_name", length = 256)//, nullable = false, updatable = false)
     private String name;
+
+    @Id
+    @PrimaryKeyJoinColumns(value = {
+        @PrimaryKeyJoinColumn(name = "requisite_id", referencedColumnName = "id")},
+            foreignKey = @ForeignKey(
+                    name = "FK_Document_head_req_prop",
+                    foreignKeyDefinition = "FOREIGN KEY (requisite_id) REFERENCES doc_head_req (id) ON UPDATE CASCADE ON DELETE CASCADE"))
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
+    private DocumentRequisite id;
 
     @Basic(optional = false)
     @Column(name = "reqprop_val", length = 256, nullable = false)
     private String value;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     @Override
     public int hashCode() {
@@ -104,22 +92,23 @@ public class DocumentRequisiteProp implements PersistedEntity<String>, Serializa
     }
 
     @Override
-    public String getPK() {
-        return getId();
+    public DocumentRequisite getPK() {
+        return getRequisite();
     }
 
     /**
      * @return the requisite
      */
     public DocumentRequisite getRequisite() {
-        return requisite;
+        return id;
     }
 
     /**
      * @param requisite the requisite to set
      */
     public void setRequisite(DocumentRequisite requisite) {
-        this.requisite = requisite;
+        this.id = requisite;
+
     }
 
     /**

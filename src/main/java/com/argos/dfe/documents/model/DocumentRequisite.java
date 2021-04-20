@@ -24,6 +24,7 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.eclipse.persistence.annotations.CascadeOnDelete;
 import org.eclipse.persistence.annotations.Multitenant;
 import org.eclipse.persistence.annotations.MultitenantType;
 import org.eclipse.persistence.annotations.TenantDiscriminatorColumn;
@@ -48,7 +49,7 @@ import org.eclipse.persistence.config.EntityManagerProperties;
 public class DocumentRequisite implements PersistedEntity<String>, Serializable {
 
     public DocumentRequisite() {
-        
+
     }
 
     /**
@@ -68,7 +69,7 @@ public class DocumentRequisite implements PersistedEntity<String>, Serializable 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Column(name = "id", length = 36, nullable = false, unique = true)
+    @Column(name = "id", length = 36, nullable = false, unique = true, updatable = false)
     @GeneratedValue(generator = "ID_GEN")
     private String id;
 
@@ -96,7 +97,8 @@ public class DocumentRequisite implements PersistedEntity<String>, Serializable 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private Document document;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "requisite", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "id", fetch = FetchType.LAZY, orphanRemoval = true)
+    @CascadeOnDelete
     private Collection<DocumentRequisiteProp> headRequisiteProps;
 
     @Override
@@ -176,14 +178,14 @@ public class DocumentRequisite implements PersistedEntity<String>, Serializable 
         }
     }
 
-    public void addHeadReqProp(DocumentRequisiteProp req) {
+    public void addHeadReqProp(DocumentRequisiteProp prop) {
         if (this.headRequisiteProps == null) {
             this.headRequisiteProps = new ArrayList<>();
         }
-        if (!this.equals(req.getRequisite())) {
-            req.setRequisite(this);
+        if (!this.equals(prop.getRequisite())) {
+            prop.setRequisite(this);
         }
-        this.headRequisiteProps.add(req);
+        this.headRequisiteProps.add(prop);
     }
 
 }
