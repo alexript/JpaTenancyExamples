@@ -108,7 +108,6 @@ public class DocumentRequisiteProp implements PersistedEntity<DocumentRequisite>
      */
     public void setRequisite(DocumentRequisite requisite) {
         this.id = requisite;
-
     }
 
     /**

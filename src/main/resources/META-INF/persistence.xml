@@ -21,13 +21,13 @@
             <!--            <property name="javax.persistence.schema-generation.create-source" value="metadata-then-script"/>
             <property name="javax.persistence.schema-generation.create-script-source" value="META-INF/sql/userdataDDL_H2.sql"/>-->
 
-            <property name="eclipselink.logging.level" value="FINEST"/>
+            <property name="eclipselink.logging.level" value="WARNING"/>
             <property name="eclipselink.logging.level.sql" value="FINEST"/>
             <property name="eclipselink.logging.parameters" value="true"/>
             <!--<property name="eclipselink.logging.connection" value="true" />-->
             <!--<property name="eclipselink.logging.session" value="true" />-->
             <!--<property name="eclipselink.logging.thread" value="true" />-->
-            <!--<property name="eclipselink.logging.timestamp" value="true" />-->--&gt;
+            <!--<property name="eclipselink.logging.timestamp" value="true" />-->
 
             <property name="eclipselink.jdbc.cache-statements" value="true"/>
             <property name="eclipselink.jdbc.batch-writing" value="JDBC"/>
