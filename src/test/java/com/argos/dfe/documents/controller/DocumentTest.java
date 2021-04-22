@@ -5,7 +5,6 @@
  */
 package com.argos.dfe.documents.controller;
 
-import com.argos.dfe.documents.model.DocPk;
 import com.argos.dfe.documents.model.Document;
 import com.argos.dfe.documents.model.DocumentRequisite;
 import com.argos.dfe.documents.model.DocumentRequisiteProp;
@@ -14,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.junit.jupiter.api.AfterAll;
