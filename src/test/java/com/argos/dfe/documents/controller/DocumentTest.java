@@ -10,11 +10,11 @@ import com.argos.dfe.documents.model.Document;
 import com.argos.dfe.documents.model.DocumentRequisite;
 import com.argos.dfe.documents.model.DocumentRequisiteProp;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.junit.jupiter.api.AfterAll;
@@ -211,5 +211,45 @@ public class DocumentTest {
 
         Document read = c.read(pk);
         assertEquals(2, read.getHeadRequisites().size());
+    }
+
+    @Test
+    public void testMultiTenancy() {
+        Date now = new Date();
+
+        Document doc1 = new Document();
+        doc1.setMnemo("test.document.mt");
+        doc1.setDate(now);
+        doc1.setNumber("mt1");
+
+        Document doc2 = new Document();
+        doc2.setMnemo("test.document.mt");
+        doc2.setDate(now);
+        doc2.setNumber("mt2");
+
+        DocumentController c = new DocumentController(emf);
+        c.create(doc1, "t1");
+        c.create(doc2, "t2");
+
+        String pk1 = doc1.getPK();
+        String pk2 = doc2.getPK();
+
+        Document read1 = c.read(pk1, "t1");
+        assertNotNull(read1);
+
+        Document read2 = c.read(pk2, "t2");
+        assertNotNull(read2);
+
+        read1 = c.read(pk1);
+        assertNull(read1);
+
+        read2 = c.read(pk2);
+        assertNull(read2);
+
+        read1 = c.read(pk1, "t2");
+        assertNull(read1);
+
+        read2 = c.read(pk2, "t1");
+        assertNull(read2);
     }
 }
