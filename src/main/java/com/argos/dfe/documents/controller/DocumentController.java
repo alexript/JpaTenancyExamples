@@ -5,6 +5,7 @@
  */
 package com.argos.dfe.documents.controller;
 
+import com.argos.dfe.documents.model.DocPk;
 import com.argos.dfe.documents.model.Document;
 import javax.persistence.EntityManagerFactory;
 

@@ -16,7 +16,7 @@ public class DocReqPropPK implements Serializable {
 
     private static final long serialVersionUID = 5334946589445088541L;
 
-    private String id;
+    private DocReqPK id;
     private String name;
 
     public DocReqPropPK() {
@@ -26,14 +26,14 @@ public class DocReqPropPK implements Serializable {
     /**
      * @return the id
      */
-    public String getId() {
+    public DocReqPK getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(String id) {
+    public void setId(DocReqPK id) {
         this.id = id;
     }
 
@@ -68,10 +68,12 @@ public class DocReqPropPK implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 3;
+        int hash = 7;
         hash = 29 * hash + Objects.hashCode(this.id);
         hash = 29 * hash + Objects.hashCode(this.name);
         return hash;
     }
+
+
 
 }

@@ -6,40 +6,25 @@
 package com.argos.dfe.documents.model;
 
 import com.argos.dfe.documents.PersistedEntity;
-import static com.argos.dfe.documents.Tenancy.DISCRIMINATOR_COLUMN_NAME;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
-import org.eclipse.persistence.annotations.Multitenant;
-import org.eclipse.persistence.annotations.MultitenantType;
-import org.eclipse.persistence.annotations.TenantDiscriminatorColumn;
-import org.eclipse.persistence.annotations.UuidGenerator;
-import org.eclipse.persistence.config.EntityManagerProperties;
 
 /**
  *
  * @author malyshev
  */
 @Entity
-@UuidGenerator(name = "ID_GEN")
 @Table(name = "doc_head_req_prop")
-@Multitenant(MultitenantType.SINGLE_TABLE)
-@TenantDiscriminatorColumn(
-        name = DISCRIMINATOR_COLUMN_NAME,
-        contextProperty = EntityManagerProperties.MULTITENANT_PROPERTY_DEFAULT,
-        primaryKey = true)
 @IdClass(DocReqPropPK.class)
 public class DocumentRequisiteProp implements PersistedEntity<DocumentRequisite>, Serializable {
 
@@ -50,15 +35,14 @@ public class DocumentRequisiteProp implements PersistedEntity<DocumentRequisite>
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Column(name = "reqprop_name", length = 256)//, nullable = false, updatable = false)
+    @Column(name = "reqprop_name", length = 256)
     private String name;
 
     @Id
-    @PrimaryKeyJoinColumns(value = {
-        @PrimaryKeyJoinColumn(name = "requisite_id", referencedColumnName = "id")},
-            foreignKey = @ForeignKey(
-                    name = "FK_Document_head_req_prop",
-                    foreignKeyDefinition = "FOREIGN KEY (requisite_id) REFERENCES doc_head_req (id) ON UPDATE CASCADE ON DELETE CASCADE"))
+    @JoinColumns(value = {
+        @JoinColumn(name = "requisite_id", referencedColumnName = "document_id"),
+        @JoinColumn(name = "requisite_mnemo", referencedColumnName = "req_mnemo")}
+    )
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
     private DocumentRequisite id;
 

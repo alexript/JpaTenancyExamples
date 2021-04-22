@@ -21,6 +21,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
@@ -29,8 +30,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import org.eclipse.persistence.annotations.CascadeOnDelete;
+import org.eclipse.persistence.annotations.IdValidation;
 import org.eclipse.persistence.annotations.Multitenant;
 import org.eclipse.persistence.annotations.MultitenantType;
+import org.eclipse.persistence.annotations.PrimaryKey;
 import org.eclipse.persistence.annotations.TenantDiscriminatorColumn;
 import org.eclipse.persistence.annotations.UuidGenerator;
 import org.eclipse.persistence.config.EntityManagerProperties;
@@ -41,15 +44,16 @@ import org.eclipse.persistence.config.EntityManagerProperties;
  */
 @Entity
 @UuidGenerator(name = "ID_GEN")
-@Table(name = "documents",
-        indexes = {
-            @Index(name = "IDX_DOCUMENT_MNEMO_NUMBER_DATE", columnList = "TENANT,doc_mnemo,number,d", unique = false)
-        })
+@Table(name = "documents", indexes = {@Index(name = "IDX_DOC_IDTENANT", columnList = "id, TENANT")})
 @Multitenant(MultitenantType.SINGLE_TABLE)
 @TenantDiscriminatorColumn(
         name = DISCRIMINATOR_COLUMN_NAME,
-        contextProperty = EntityManagerProperties.MULTITENANT_PROPERTY_DEFAULT,
-        primaryKey = true)
+        contextProperty = EntityManagerProperties.MULTITENANT_PROPERTY_DEFAULT
+//        ,        primaryKey = true
+)
+@PrimaryKey(validation = IdValidation.ZERO, columns = {
+    @Column(name = "id", length = 36, nullable = false, unique = true),
+})
 public class Document implements PersistedEntity<String>, Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -76,7 +80,8 @@ public class Document implements PersistedEntity<String>, Serializable {
         @JoinColumn(name = "parent_id", referencedColumnName = "id", nullable = true)
     }, foreignKey = @ForeignKey(
             name = "FK_Document_Parent",
-            foreignKeyDefinition = "FOREIGN KEY (parent_id) REFERENCES documents (id) ON DELETE SET NULL"))
+            foreignKeyDefinition = "FOREIGN KEY (parent_id) REFERENCES documents (id) ON DELETE SET NULL")
+    )
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private Document parent;
 
